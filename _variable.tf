@@ -4,7 +4,7 @@ variable "env" {
   description = "Environment"
 }
 
-variable "group" {
+variable "groups" {
   type        = list(string)
   description = "The name of group to create"
 }

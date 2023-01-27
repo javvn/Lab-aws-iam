@@ -24,6 +24,8 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_iam_access_key.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key) | resource |
+| [aws_iam_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group) | resource |
+| [aws_iam_group_membership.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_membership) | resource |
 | [aws_iam_user.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
 | [aws_iam_user_login_profile.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_login_profile) | resource |
 
@@ -32,12 +34,13 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_env"></a> [env](#input\_env) | Environment | `string` | `"dev"` | no |
-| <a name="input_group"></a> [group](#input\_group) | The name of group to create | `list(string)` | n/a | yes |
+| <a name="input_groups"></a> [groups](#input\_groups) | The name of group to create | `list(string)` | n/a | yes |
 | <a name="input_users"></a> [users](#input\_users) | The list of user to create | <pre>list(object({<br>    Name  = string<br>    Group = string<br>    Role  = string<br>  }))</pre> | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| <a name="output_groups"></a> [groups](#output\_groups) | n/a |
 | <a name="output_user_profile"></a> [user\_profile](#output\_user\_profile) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

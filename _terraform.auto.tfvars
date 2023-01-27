@@ -1,5 +1,5 @@
 
-group = ["admin", "dev"]
+groups = ["admin", "dev"]
 users = [
   {
     Name  = "jawn"

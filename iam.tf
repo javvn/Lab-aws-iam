@@ -54,3 +54,28 @@ resource "aws_iam_user_login_profile" "this" {
     aws_iam_user.this
   ]
 }
+
+################################################
+# IAM GROUP
+################################################
+resource "aws_iam_group" "this" {
+  count = length(var.groups)
+
+  name = var.groups[count.index]
+}
+
+################################################
+# IAM GROUP MEMBERSHIP
+################################################
+resource "aws_iam_group_membership" "this" {
+  count = length(aws_iam_group.this)
+
+  group = aws_iam_group.this[count.index].name
+  name  = "${aws_iam_group.this[count.index].name}-group-membership"
+  users = [for k, v in aws_iam_user.this : v.name if v.tags.Group == aws_iam_group.this[count.index].name]
+
+  depends_on = [
+    aws_iam_user.this,
+    aws_iam_group.this
+  ]
+}
