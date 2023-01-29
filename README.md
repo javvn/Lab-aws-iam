@@ -28,6 +28,9 @@ No modules.
 | [aws_iam_group_membership.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_membership) | resource |
 | [aws_iam_group_policy_attachment.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
 | [aws_iam_policy.dev](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.dev_leader](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.dev_member](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_user.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
 | [aws_iam_user_login_profile.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_login_profile) | resource |
 | [aws_iam_policy.admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy) | data source |
@@ -38,6 +41,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_env"></a> [env](#input\_env) | Environment | `string` | `"dev"` | no |
 | <a name="input_groups"></a> [groups](#input\_groups) | The name of group to create | `list(string)` | n/a | yes |
+| <a name="input_roles"></a> [roles](#input\_roles) | The list of role to create | `list(string)` | n/a | yes |
 | <a name="input_users"></a> [users](#input\_users) | The list of user to create | <pre>list(object({<br>    Name  = string<br>    Group = string<br>    Role  = string<br>  }))</pre> | n/a | yes |
 
 ## Outputs

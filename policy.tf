@@ -44,84 +44,89 @@ resource "aws_iam_group_policy_attachment" "this" {
   ]
 }
 
+########################################################
+# POLICY -  FOR LEADER
+########################################################
+resource "aws_iam_policy" "dev_leader" {
+  name        = "DevLeaderAccess"
+  path        = "/dev/"
+  description = "Provides code commit full access"
 
-//########################################################
-//# POLICY - IAM FULL FOR LEADER OR ADMIN OR ROOT
-//########################################################
-////resource "aws_iam_policy" "iam_full" {
-////  name = "LabIAMFull"
-////  description = "IAM full access policy for leader or admin or root"
-////
-////  policy = jsonencode({
-////    "Version": "2012-10-17",
-////    "Statement": [
-////      {
-////        "Effect": "Allow",
-////        "Action": "iam:*"
-////        "Resource": "*"
-////      }
-////    ]
-////  })
-////
-////  tags = local.common_tags
-////
-////  depends_on = [
-////    aws_iam_user.user
-////  ]
-////}
-//
-//########################################################
-//# POLICY - IAM FULL FOR LEADER OR ADMIN OR ROOT
-//########################################################
-//resource "aws_iam_policy" "code_commit_full" {
-//  name        = "Lab-CodeCommitFullAccess"
-//  description = "Code commit full access policy"
-//
-//  policy = jsonencode({
-//    "Version" : "2012-10-17",
-//    "Statement" : [
-//      {
-//        "Effect" : "Allow",
-//        "Action" : ["codecommit:ListRepositories"],
-//        "Resource" : "*"
-//      },
-//      {
-//        "Effect" : "Allow",
-//        "Action" : ["codecommit:GetRepository"],
-//        "Resource" : local.repo_state["arn"]
-//      }
-//    ]
-//  })
-//
-//  tags = local.common_tags
-//
-//  depends_on = [
-//    data.terraform_remote_state.repository
-//  ]
-//}
-//
-//########################################################
-//# POLICY GROUP ATTACHMENT
-//########################################################
-//resource "aws_iam_group_policy_attachment" "this" {
-//  group      = aws_iam_group.dev.name
-//  policy_arn = aws_iam_policy.code_commit_full.arn
-//
-//  depends_on = [
-//    aws_iam_group.dev,
-//    aws_iam_policy.code_commit_full
-//  ]
-//}
-//
-//########################################################
-//# POLICY USER ATTACHMENT
-//########################################################
-//resource "aws_iam_user_policy_attachment" "this" {
-//  user       = "john"
-//  policy_arn = aws_iam_policy.code_commit_full.arn
-//
-//  depends_on = [
-//    aws_iam_user.user,
-//    aws_iam_policy.code_commit_full
-//  ]
-//}
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : "codecommit:*",
+        "Resource" : "*"
+      }
+    ]
+  })
+
+  tags = local.common_tags
+}
+
+########################################################
+# POLICY -  FOR MEMBER
+########################################################
+resource "aws_iam_policy" "dev_member" {
+  name        = "DevMemberAccess"
+  path        = "/dev/"
+  description = "Provides code commit limited access"
+
+  policy = jsonencode({
+    Version : "2012-10-17",
+    Statement : [{
+      Effect : "Allow",
+      Action : [
+        "codecommit:*Branch",
+        "codecommit:*Comment",
+        "codecommit:Get*",
+        "codecommit:List*",
+        "codecommit:PutFile",
+
+      ],
+      Resource : "*"
+    }]
+  })
+
+  tags = local.common_tags
+}
+
+resource "aws_iam_role" "this" {
+  count = length(var.roles)
+
+  path = "/dev/"
+  name = "Dev${title(var.roles[count.index])}"
+
+
+  assume_role_policy = jsonencode({
+    Version : "2012-10-17",
+    Statement : [{
+      "Effect" : "Allow",
+      "Action" : "sts:AssumeRole"
+      "Principal" : {
+        "AWS" : var.roles[count.index] == "leader" ? local.leader_users.arn : local.member_users.arn
+      },
+    }]
+  })
+
+  managed_policy_arns = var.roles[count.index] == "leader" ? [
+    data.aws_iam_policy.admin.arn,
+    aws_iam_policy.dev_leader.arn
+    ] : [
+    aws_iam_policy.dev.arn,
+    aws_iam_policy.dev_member.arn
+  ]
+
+  depends_on = [
+    aws_iam_policy.dev,
+    aws_iam_policy.dev_leader,
+    aws_iam_policy.dev_member,
+    aws_iam_user.this,
+    aws_iam_group.this
+  ]
+
+  tags = merge(local.common_tags, { Role = title(var.roles[count.index]) })
+}
+

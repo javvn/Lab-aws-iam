@@ -17,4 +17,7 @@ locals {
     arn   = v.arn
     users = tolist(aws_iam_group_membership.this[k].users)
   } }
+
+  member_users_arn = [for k, v in local.user_profiles : v.arn if v.role == "member"]
+  leader_users_arn = [for k, v in local.user_profiles : v.arn if v.role == "leader"]
 }

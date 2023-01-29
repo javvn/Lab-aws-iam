@@ -22,4 +22,5 @@ users = [
     Role  = "member"
   }
 ]
+roles = ["leader", "member"]
 

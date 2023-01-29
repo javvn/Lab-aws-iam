@@ -9,6 +9,11 @@ variable "groups" {
   description = "The name of group to create"
 }
 
+variable "roles" {
+  type        = list(string)
+  description = "The list of role to create"
+}
+
 variable "users" {
   type = list(object({
     Name  = string
